@@ -1,9 +1,9 @@
-// #8
 <?php
 
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\HelloController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -17,12 +17,11 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
 
-Route::get('/hello', [HelloController::class, 'show']);
+Route::get('/',[HelloController::class, 'show']);
 
 Auth::routes();
 
-Route::get('/home', [HomeController::class, 'index'])->name('home');
+Route::get('/home', [HomeController::class, 'index'])->name('home')->middleware('auth');
+
+Route::get('/users/list', [UserController::class, 'index'])->name('users-list')->middleware('auth');
