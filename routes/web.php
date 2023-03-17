@@ -22,6 +22,10 @@ Route::get('/',[HelloController::class, 'show']);
 
 Auth::routes();
 
-Route::get('/home', [HomeController::class, 'index'])->name('home')->middleware('auth');
+Route::middleware('auth')->group(function() {
 
-Route::get('/users/list', [UserController::class, 'index'])->name('users-list')->middleware('auth');
+    Route::get('/home', [HomeController::class, 'index'])->name('home');
+
+    Route::get('/users/list', [UserController::class, 'index'])->name('users-list');
+});
+
