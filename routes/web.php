@@ -1,5 +1,7 @@
 <?php
 
+// kolejna rzecz -> paginacja
+
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\HelloController;
 use App\Http\Controllers\HomeController;
