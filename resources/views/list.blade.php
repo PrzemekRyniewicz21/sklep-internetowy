@@ -2,6 +2,13 @@
 
 @section('content')
 <div class="container">
+
+    @if (null !== (Session::get('msg')))
+        <div class="alert alert-success  text-lg-center">
+            <h1>{{Session::get('msg')}}</h1>
+        </div>
+    @endif
+
    <table class="table">
         <thead>
         <tr>
@@ -22,7 +29,11 @@
             <td>{{ $user->surname }}</td>
             <td>{{ $user->email }}</td>
             <td>{{ $user->phone_number }}</td>
-            <td></td>
+            <td>
+                <form action="{{route('user_delete')}}" method="get">
+                    <button name="user_id" value="{{$user->id}}">X</button>
+                </form>
+            </td>
         </tbody>
         @endforeach
 

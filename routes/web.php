@@ -27,7 +27,7 @@ Auth::routes();
 Route::middleware('auth')->group(function() {
 
     Route::get('/home', [HomeController::class, 'index'])->name('home');
-
+    Route::get('/users',[UserController::class, 'destroy'])->name('user_delete');
     Route::get('/users/list', [UserController::class, 'index'])->name('users-list');
 });
 
