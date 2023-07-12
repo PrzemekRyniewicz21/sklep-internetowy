@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use Illuminate\Http\Request;
+use App\Http\Requests\StoreProductRequest;
 
 class ProductController extends Controller
 {
@@ -38,16 +39,20 @@ class ProductController extends Controller
      * @param  Request  $request
      * @return RedirectResponse
      */
-    public function store(Request $request)
+    public function store(StoreProductRequest $request)
     {
         // phpinfo();
         // dd($request->file('img')->store('pulic'));
 
-        $product = new Product($request->all());
 
-        $product->save();if($request->hasFile('img')){
+
+        $product = new Product($request->validated());
+
+        if($request->hasFile('img')){
             $product->img_path = $request->file('img')->store('public');
         }
+
+        $product->save();
 
         return redirect(route('products-list'));
     }
@@ -87,9 +92,9 @@ class ProductController extends Controller
      * @param  \App\Models\Product  $product
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Product $product)
+    public function update(StoreProductRequest $request, Product $product)
     {
-        $product->fill($request->all());
+        $product->fill($request->validated());
         
         if($request->hasFile('img')){
             $product->img_path = $request->file('img')->store('public');
