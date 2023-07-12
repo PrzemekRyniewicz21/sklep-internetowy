@@ -28,6 +28,7 @@ class ProductController extends Controller
      */
     public function create()
     {
+        // dd("??");
         return view('products.create');
     }
 
@@ -39,10 +40,14 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
-        // dd($request->except('_token'));
-        // exit;
+        // phpinfo();
+        // dd($request->file('img')->store('pulic'));
+
         $product = new Product($request->all());
-        $product->save();
+
+        $product->save();if($request->hasFile('img')){
+            $product->img_path = $request->file('img')->store('public');
+        }
 
         return redirect(route('products-list'));
     }
@@ -85,9 +90,13 @@ class ProductController extends Controller
     public function update(Request $request, Product $product)
     {
         $product->fill($request->all());
+        
+        if($request->hasFile('img')){
+            $product->img_path = $request->file('img')->store('public');
+        }
+
         $product->save();
         // dd("???");
-
         return redirect(route('products-list'));
     }
 
