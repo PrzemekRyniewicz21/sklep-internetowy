@@ -81,42 +81,16 @@
                 </div><div class="col-md-4 order-md-1 col-lg-3 sidebar-filter">
                   <h3 class="mt-0 mb-5">Showing <span class="text-primary">{{ count($products) }}</span> Products</h3>
                   <h6 class="text-uppercase font-weight-bold mb-3">Categories</h6>
+
+                  @foreach($categories as $category)
                   <div class="mt-2 mb-2 pl-2">
                     <div class="custom-control custom-checkbox">
-                      <input type="checkbox" class="custom-control-input" id="category-1">
-                      <label class="custom-control-label" for="category-1">Accessories</label>
+                      <input type="checkbox" class="custom-control-input" id="category-{{$category->id}}">
+                      <label class="custom-control-label" for="category-{{$category->id}}">{{$category->name}}</label>
                     </div>
                   </div>
-                  <div class="mt-2 mb-2 pl-2">
-                    <div class="custom-control custom-checkbox">
-                      <input type="checkbox" class="custom-control-input" id="category-2">
-                      <label class="custom-control-label" for="category-2">Coats &amp; Jackets</label>
-                    </div>
-                  </div>
-                  <div class="mt-2 mb-2 pl-2">
-                    <div class="custom-control custom-checkbox">
-                      <input type="checkbox" class="custom-control-input" id="category-3">
-                      <label class="custom-control-label" for="category-3">Hoodies &amp; Sweatshirts</label>
-                    </div>
-                  </div>
-                  <div class="mt-2 mb-2 pl-2">
-                    <div class="custom-control custom-checkbox">
-                      <input type="checkbox" class="custom-control-input" id="category-4">
-                      <label class="custom-control-label" for="category-4">Jeans</label>
-                    </div>
-                  </div>
-                  <div class="mt-2 mb-2 pl-2">
-                    <div class="custom-control custom-checkbox">
-                      <input type="checkbox" class="custom-control-input" id="category-5">
-                      <label class="custom-control-label" for="category-5">Shirts</label>
-                    </div>
-                  </div>
-                  <div class="mt-2 mb-2 pl-2">
-                    <div class="custom-control custom-checkbox">
-                      <input type="checkbox" class="custom-control-input" id="category-6">
-                      <label class="custom-control-label" for="category-6">Underwear</label>
-                    </div>
-                  </div>
+                  @endforeach
+            
                   <div class="divider mt-5 mb-5 border-bottom border-secondary"></div>
                   <h6 class="text-uppercase mt-5 mb-3 font-weight-bold">Size</h6>
                   <div class="mt-2 mb-2 pl-2">
