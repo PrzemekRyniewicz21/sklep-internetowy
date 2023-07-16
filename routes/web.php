@@ -26,36 +26,21 @@ Auth::routes();
 
 Route::get('/', [WelcomeController::class, 'index']);
 
-Route::prefix('products')->group(function () {
-    Route::get('/', [ProductController::class, 'index'])->name('products-list');
-    Route::get('/create', [ProductController::class, 'create'])->name('products-create');
-    Route::post('/', [ProductController::class, 'store'])->name('products-store');
-    Route::get('/{product}', [ProductController::class, 'show'])->name('products-show');
-    Route::get('/edit/{product}', [ProductController::class, 'edit'])->name('products-edit'); // {priduct} model binding !!!
-    Route::post('/{product}', [ProductController::class, 'update'])->name('products-update');
-    Route::delete('/{product}', [ProductController::class, 'destroy'])->name('product-delete');
+
+Route::middleware('auth')->group(function() {
+
+    
+    Route::prefix('products')->group(function () {
+        Route::get('/', [ProductController::class, 'index'])->name('products-list');
+        Route::get('/create', [ProductController::class, 'create'])->name('products-create');
+        Route::post('/', [ProductController::class, 'store'])->name('products-store');
+        Route::get('/{product}', [ProductController::class, 'show'])->name('products-show');
+        Route::get('/edit/{product}', [ProductController::class, 'edit'])->name('products-edit'); // {product} model binding !!!
+        Route::post('/{product}', [ProductController::class, 'update'])->name('products-update');
+        Route::delete('/{product}', [ProductController::class, 'destroy'])->name('product-delete');
+    });
+
+    Route::get('/home', [HomeController::class, 'index'])->name('home');
+    Route::get('/users',[UserController::class, 'destroy'])->name('user_delete');
+    Route::get('/home/users-list', [UserController::class, 'index'])->name('users-list');
 });
-
-Route::get('/home', [HomeController::class, 'index'])->name('home');
-Route::get('/users',[UserController::class, 'destroy'])->name('user_delete');
-Route::get('/home/users-list', [UserController::class, 'index'])->name('users-list');
-
-// Route::middleware('auth')->group(function() {
-
-//     // dd("???");
-//     Route::prefix('products')->group(function () {
-//         Route::get('/', [ProductController::class, 'index'])->name('products-list');
-//         Route::get('/create', [ProductController::class, 'create'])->name('products-create');
-//         Route::post('/', [ProductController::class, 'store'])->name('products-store');
-//         Route::get('/{product}', [ProductController::class, 'show'])->name('products-show');
-//         Route::get('/edit/{product}', [ProductController::class, 'edit'])->name('products-edit'); // {priduct} model binding !!!
-//         Route::post('/{product}', [ProductController::class, 'update'])->name('products-update');
-//         Route::delete('/{product}', [ProductController::class, 'destroy'])->name('product-delete');
-//     });
-
-//     Route::get('/home', [HomeController::class, 'index'])->name('home');
-//     Route::get('/users',[UserController::class, 'destroy'])->name('user_delete');
-//     Route::get('/home/users-list', [UserController::class, 'index'])->name('users-list');
-// });
-
-// crud 23:20

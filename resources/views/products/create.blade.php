@@ -7,9 +7,9 @@
         <div class="col-md-8">
             <div class="card">
                 <div class="card-header">{{ __('Add product') }}</div>
-
+                    
                 <div class="card-body">
-                    <form method="POST" action="{{ route('products-store') }}" enctype="multipart/form-data">
+                    <form method="POST" action="/products" enctype="multipart/form-data">
 
                         @csrf
 
@@ -33,7 +33,7 @@
                             <div class="col-md-6">
                                 <input id="description" type="text" class="form-control @error('description') is-invalid @enderror" name="description" value="{{ old('description') }}" autofocus>
 
-                                @error('descriprion')
+                                @error('description')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
                                     </span>
@@ -70,6 +70,26 @@
                         </div>
 
                         <div class="form-group row">
+                            <label for="category" class="col-md-4 col-form-label text-md-right">{{ __('category') }}</label>
+
+                            <div class="col-md-6">
+                                <select id="category" step="0.01" min="0" class="form-control @error('category_id') is-invalid @enderror" name="category_id">
+                                    <option value="">Brak</option>
+                                    @foreach($categories as $category)
+                                        <option value="{{ $category->id }}">{{ $category->name }} </option>
+                                    @endforeach
+
+                                </select>
+
+                                @error('category_id')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
                             <label for="image" class="col-md-4 col-form-label text-md-right">{{ __('Image') }}</label>
 
                             <div class="col-md-6">
@@ -85,6 +105,7 @@
                             </div>
                         </div>
                     </form>
+                    
                 </div>
             </div>
         </div>

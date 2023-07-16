@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
+use App\Models\ProductCategory;
 use Illuminate\Http\Request;
 use App\Http\Requests\StoreProductRequest;
+
 
 class ProductController extends Controller
 {
@@ -15,6 +17,7 @@ class ProductController extends Controller
      */
     public function index()
     {
+        // dd("??");
         $products = Product::paginate(5);
         
         return view('products.index',[
@@ -30,7 +33,12 @@ class ProductController extends Controller
     public function create()
     {
         // dd("??");
-        return view('products.create');
+        
+        $categories = ProductCategory::all();
+
+        return view('products.create')->with([
+            'categories' => $categories,
+        ]);
     }
 
     /**
@@ -41,10 +49,7 @@ class ProductController extends Controller
      */
     public function store(StoreProductRequest $request)
     {
-        // phpinfo();
-        // dd($request->file('img')->store('pulic'));
-
-
+        // dd("???");
 
         $product = new Product($request->validated());
 
@@ -66,7 +71,8 @@ class ProductController extends Controller
     public function show(Product $product)
     {
         return view("products.show",[
-            'product' => $product
+            'product' => $product,
+            'categories' => ProductCategory::all(),
         ]);
     }
 
@@ -82,6 +88,7 @@ class ProductController extends Controller
 
         return view("products.edit",[
             'product' => $product,
+            'categories' => ProductCategory::all(),
         ]);
     }
 

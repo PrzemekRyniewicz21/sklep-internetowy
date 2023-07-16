@@ -25,10 +25,17 @@ class StoreProductRequest extends FormRequest
     {
         return [
             'name' => 'required|max:50',
-            'descriprion' => 'required|max:1500',
+            'description' => 'required|max:1500',
             'amount' => 'required|integer|min:0',
             'price' => 'required|numeric',
-            'img' => 'nullable|image'
+            'img' => 'nullable|image',
+            'category_id' => 'nullable|integer|min:0',
+        ];
+    }
+
+    public function messages(){
+        return [
+            'name.required' => 'Name field is required',
         ];
     }
 }
