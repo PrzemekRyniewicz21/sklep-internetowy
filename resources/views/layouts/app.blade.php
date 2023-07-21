@@ -4,6 +4,8 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
@@ -75,8 +77,11 @@
         </nav>
 
         <main class="py-4">
+            @yield('javascript')
             @yield('content')
         </main>
     </div>
+    
+    @yield('js-files')
 </body>
 </html>
