@@ -86,7 +86,7 @@ class UserController extends Controller
         User::find($request->user_id)
             ->delete();
 
-        return redirect('users/list')
+        return redirect(route('users-list'))
             ->with([
                 'msg' => 'User Deleted'
             ]);

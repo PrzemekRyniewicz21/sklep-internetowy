@@ -3,12 +3,8 @@
 @section('content')
 <div class="container">
 
-    <!-- @if (null !== (Session::get('msg')))
-        <div class="alert alert-success  text-lg-center">
-            <h1>{{Session::get('msg')}}</h1>
-        </div>
-    @endif -->
-
+    @include('helpers.messages')
+    
     <div class="row">
         <div class="col-6">
             <h1>Product list</h1>

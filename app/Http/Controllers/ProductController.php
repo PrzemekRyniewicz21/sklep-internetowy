@@ -6,6 +6,7 @@ use App\Models\Product;
 use App\Models\ProductCategory;
 use Illuminate\Http\Request;
 use App\Http\Requests\StoreProductRequest;
+use Illuminate\Support\Facades\Session;
 
 
 class ProductController extends Controller
@@ -59,7 +60,7 @@ class ProductController extends Controller
 
         $product->save();
 
-        return redirect(route('products-list'));
+        return redirect(route('products-list'))->with('status', 'product stored');
     }
 
     /**
@@ -89,7 +90,7 @@ class ProductController extends Controller
         return view("products.edit",[
             'product' => $product,
             'categories' => ProductCategory::all(),
-        ]);
+        ])->with('status', 'Product edited!');
     }
 
     /**
@@ -109,7 +110,7 @@ class ProductController extends Controller
 
         $product->save();
         // dd("???");
-        return redirect(route('products-list'));
+        return redirect(route('products-list'))->with('status', 'product stored');
     }
 
     /**
@@ -123,7 +124,7 @@ class ProductController extends Controller
         // dd("???");
         try{
             $product->delete();
-
+            Session::flash('status', 'Product deleted!');
             return redirect(route('products-list'));
             
         } catch (Exception $e){
