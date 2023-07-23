@@ -18,7 +18,6 @@ class WelcomeController extends Controller
         $filters = $request->query('filter');
         $paginate = $request->query('paginate') ?? 5;
         $query = Product::query();
-        $query->paginate($paginate);
         
         // dd($filters['price_min']);
 
@@ -36,16 +35,13 @@ class WelcomeController extends Controller
                 $query = $query->where('price', '<=', $filters['price_max']);
             }
 
-            return response()->json([
-                'data' => $query->get(),
-            ]);
+            return response()->json($query->paginate($paginate));
         }
         
-        $products = $query->get();
         $categories = ProductCategory::orderBy('name')->get();
         
         return view('welcome',[
-            'products' => $products,
+            'products' => $query->paginate($paginate),
             'categories' => $categories,
             'default_img' => 'https://via.placeholder.com/240x240/5fa9f8/efefef'
         ]);

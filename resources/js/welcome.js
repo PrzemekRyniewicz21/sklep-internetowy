@@ -3,15 +3,17 @@
 //
 //})
 
+// alert("??");
+
 $(function () {
 
   $('div.products-count a').on('click', function(){
-     $('a.products-actual-count').text($(this).text());
+     $('a.products-actual-count').text($(this).text()); 
      getProduct($(this).text());
   });
 
   $('a#button').on('click', function () {
-    getProduct($('a.products-actual-count'));
+    getProduct($('a.products-actual-count').first().text()); // first() dlatego, ze mamy dwa elementy a.products-actual-count na naszej stronie
   });
 
   function getProduct(paginate){
@@ -22,8 +24,6 @@ $(function () {
         method: "GET",
         url: "/",
         data: form + "&" + $.param({paginate: paginate})
-        
-
 
     }).done(function (response){
         $('div#products-wrapper').empty();
