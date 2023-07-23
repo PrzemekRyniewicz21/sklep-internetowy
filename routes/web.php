@@ -22,12 +22,13 @@ use Illuminate\Support\Facades\Route;
 */
 
 
-Auth::routes();
-
-Route::get('/', [WelcomeController::class, 'index']);
+Auth::routes(['verify' => true]); 
 
 
-Route::middleware('auth')->group(function() {
+Route::get('/hello', [HelloController::class, 'show']);
+
+
+Route::middleware(['auth', 'verified'])->group(function() {
 
     
     Route::prefix('products')->group(function () {
@@ -40,6 +41,7 @@ Route::middleware('auth')->group(function() {
         Route::delete('/{product}', [ProductController::class, 'destroy'])->name('product-delete');
     });
 
+    Route::get('/', [WelcomeController::class, 'index']);
     Route::get('/home', [HomeController::class, 'index'])->name('home');
     Route::get('/users',[UserController::class, 'destroy'])->name('user_delete');
     Route::get('/home/users-list', [UserController::class, 'index'])->name('users-list');
