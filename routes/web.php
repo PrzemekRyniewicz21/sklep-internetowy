@@ -25,24 +25,31 @@ use Illuminate\Support\Facades\Route;
 Auth::routes(['verify' => true]); 
 
 
+Route::get('/', [WelcomeController::class, 'index']);
 Route::get('/hello', [HelloController::class, 'show']);
 
 
 Route::middleware(['auth', 'verified'])->group(function() {
 
-    
-    Route::prefix('products')->group(function () {
-        Route::get('/', [ProductController::class, 'index'])->name('products-list');
-        Route::get('/create', [ProductController::class, 'create'])->name('products-create');
-        Route::post('/', [ProductController::class, 'store'])->name('products-store');
-        Route::get('/{product}', [ProductController::class, 'show'])->name('products-show');
-        Route::get('/edit/{product}', [ProductController::class, 'edit'])->name('products-edit'); // {product} model binding !!!
-        Route::post('/{product}', [ProductController::class, 'update'])->name('products-update');
-        Route::delete('/{product}', [ProductController::class, 'destroy'])->name('product-delete');
-    });
+   Route::middleware(['can:isAdmin'])->group(function(){
 
-    Route::get('/', [WelcomeController::class, 'index']);
+        Route::prefix('products')->group(function () {
+            Route::get('/', [ProductController::class, 'index'])->name('products-list');
+            Route::get('/create', [ProductController::class, 'create'])->name('products-create');
+            Route::post('/', [ProductController::class, 'store'])->name('products-store');
+            Route::get('/{product}', [ProductController::class, 'show'])->name('products-show');
+            Route::get('/edit/{product}', [ProductController::class, 'edit'])->name('products-edit'); // {product} model binding !!!
+            Route::post('/{product}', [ProductController::class, 'update'])->name('products-update');
+            Route::delete('/{product}', [ProductController::class, 'destroy'])->name('product-delete');
+        });
+
+        Route::get('/users',[UserController::class, 'destroy'])->name('user_delete');
+        Route::get('/home/users-list', [UserController::class, 'index'])->name('users-list');
+   }); 
+    
+
+    
     Route::get('/home', [HomeController::class, 'index'])->name('home');
-    Route::get('/users',[UserController::class, 'destroy'])->name('user_delete');
-    Route::get('/home/users-list', [UserController::class, 'index'])->name('users-list');
+    
+    
 });

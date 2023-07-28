@@ -7,11 +7,13 @@
     
     <div class="row">
         <div class="col-6">
-            <h1>Product list</h1>
+            <h1><i class="fa-solid fa-list"></i> Product list</h1>
         </div>
         <div class="col-6">
             <a href="{{ route('products-create') }}" class="float-right">
-                <button class="btn btn-primary">Add</button>
+                <button class="btn btn-primary">
+                    <i class="fa-solid fa-plus"></i>
+                </button>
             </a>
         </div>
     </div>
@@ -42,21 +44,21 @@
             <td>
                 <a href="{{ route('products-show', $product->id) }}">
                     <button class="btn btn-primary btn-sm">
-                        P
+                        <i class="fa-solid fa-magnifying-glass"></i>
                     </button>
                 </a>
 
                 <a href="{{ route('products-edit', $product->id) }}">
                     <button class="btn btn-primary btn-sm">
-                        E
+                        <i class="fa-regular fa-pen-to-square"></i>
                     </button>
                 </a>
 
-                <form action="{{ route('product-delete', $product->id) }}" method="POST" onsubmit="return confirm('Czy na pewno chcesz usunąć ten produkt?')">
+                <form style="float:right" action="{{ route('product-delete', $product->id) }}" method="POST" onsubmit="return confirm('Czy na pewno chcesz usunąć ten produkt?')">
                     @method('DELETE')
                     @csrf
                     <button type="submit" class="btn btn-danger btn-sm delete">
-                        X
+                        <i class="fa-solid fa-trash"></i>
                     </button>
                 </form>
                 

@@ -31,7 +31,9 @@
             <td>{{ $user->phone_number }}</td>
             <td>
                 <form action="{{route('user_delete')}}" method="get">
-                    <button name="user_id" value="{{$user->id}}">X</button>
+                    <button name="user_id" value="{{$user->id}}">
+                        <i class="fa-solid fa-trash"></i>
+                    </button>
                 </form>
             </td>
         </tbody>
