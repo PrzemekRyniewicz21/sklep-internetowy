@@ -52,6 +52,9 @@
                               <h5 class="card-price small text-warning">
                                 <i>PLN{{ $product->price}}</i>
                               </h5>
+                              <button class="btn btn-success btn-sm add-cart-button" data-id="{{ $product->id }}" @guest disabled @endguest>
+                                <i class="fa-solid fa-cart-shopping"></i> Add to cart
+                              </button>
                             </div>
                           </div>
                         </div>
@@ -112,6 +115,7 @@
   <script>
     const storage = '{{ asset('storage') }}/';
     const default_img = '{{ $default_img }}';
+    const add_to_cart = '{{ url('cart-store') }}/';
   </script>
 @endsection
 @section('js-files')

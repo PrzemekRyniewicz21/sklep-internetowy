@@ -2,6 +2,7 @@
 
 // kolejna rzecz -> paginacja
 
+use App\Http\Controllers\CartController;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\HelloController;
 use App\Http\Controllers\HomeController;
@@ -31,7 +32,7 @@ Route::get('/hello', [HelloController::class, 'show']);
 
 Route::middleware(['auth', 'verified'])->group(function() {
 
-   Route::middleware(['can:isAdmin'])->group(function(){
+    Route::middleware(['can:isAdmin'])->group(function(){
 
         Route::prefix('products')->group(function () {
             Route::get('/', [ProductController::class, 'index'])->name('products-list');
@@ -45,11 +46,11 @@ Route::middleware(['auth', 'verified'])->group(function() {
 
         Route::get('/users',[UserController::class, 'destroy'])->name('user_delete');
         Route::get('/home/users-list', [UserController::class, 'index'])->name('users-list');
-   }); 
+    }); 
     
-
-    
+    Route::get('/cart/list', [CartController::class, 'index'])->name('cart-index');
+    Route::post('/cart/{product}', [CartController::class, 'store'])->name('cart-store');
     Route::get('/home', [HomeController::class, 'index'])->name('home');
-    
+
     
 });

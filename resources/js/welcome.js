@@ -16,6 +16,21 @@ $(function () {
     getProduct($('a.products-actual-count').first().text()); // first() dlatego, ze mamy dwa elementy a.products-actual-count na naszej stronie
   });
 
+  $('button.add-cart-button').on('click', function () {
+
+     $.ajax({
+        method: "POST",
+        url: 'cart/' + $(this).data('id')
+
+    }).done(function (){
+      alert("Dodano");
+
+    }).fail(function (){
+      alert("Err");
+    });
+
+  });
+
   function getProduct(paginate){
     const form = $('form.sidebar-filter').serialize(); // serialize() wezmie tylko zaznaczone pola!
     // console.log(form);
