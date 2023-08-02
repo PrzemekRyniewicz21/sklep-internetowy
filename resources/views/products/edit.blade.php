@@ -70,7 +70,11 @@
 
                         <div class="form-group row justify-content-center">
                             <div class="col-md-6">
-                                <img src="{{ asset('storage/' . $product->img_path) }}" alt="">
+                                @if(!is_null($product->img_path))
+                                    <a href="{{ route('products-download-img', $product->id) }}">
+                                        <img src="{{ asset('storage/' . $product->img_path) }}" >
+                                    </a>
+                                @endif
                             </div>
                         </div>
 

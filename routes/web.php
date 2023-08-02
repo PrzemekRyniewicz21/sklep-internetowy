@@ -34,6 +34,8 @@ Route::middleware(['auth', 'verified'])->group(function() {
 
     Route::middleware(['can:isAdmin'])->group(function(){
 
+        Route::get('products/{product}/donwload', [ProductController::class, 'download_img'])->name('products-download-img');
+
         Route::prefix('products')->group(function () {
             Route::get('/', [ProductController::class, 'index'])->name('products-list');
             Route::get('/create', [ProductController::class, 'create'])->name('products-create');

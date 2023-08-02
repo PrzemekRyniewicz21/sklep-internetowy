@@ -7,6 +7,7 @@ use App\Models\ProductCategory;
 use Illuminate\Http\Request;
 use App\Http\Requests\StoreProductRequest;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Storage;
 
 
 class ProductController extends Controller
@@ -102,9 +103,14 @@ class ProductController extends Controller
      */
     public function update(StoreProductRequest $request, Product $product)
     {
+        $old_img_path = $product->img_path;
+
         $product->fill($request->validated());
         
         if($request->hasFile('img')){
+            if(Storage::exists($old_img_path)){
+                Storage::delete($old_img_path);
+            }
             $product->img_path = $request->file('img')->store('public');
         }
 
@@ -133,5 +139,20 @@ class ProductController extends Controller
                 'message' => 'Error accured!'
             ])->setStatusCode(500);
         }
+    }
+
+    /**
+     * Download image of the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Models\Product  $product
+     * @return \Illuminate\Http\Response
+     */
+    public function download_img(Product $product)
+    {
+        if(Storage::exists($product->img_path)){
+                return Storage::download($product->img_path);
+        }
+        return redirect()->back();
     }
 }
