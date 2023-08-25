@@ -8,18 +8,18 @@ var __webpack_exports__ = {};
 //
 //})
 
-// alert("??");
-
 $(function () {
   $('div.products-count a').on('click', function () {
     $('a.products-actual-count').text($(this).text());
     getProduct($(this).text());
   });
   $('a#button').on('click', function () {
+    alert("??");
     getProduct($('a.products-actual-count').first().text()); // first() dlatego, ze mamy dwa elementy a.products-actual-count na naszej stronie
   });
 
-  $('button.add-cart-button').on('click', function () {
+  $('div#products-wrapper').on('click', 'button.add-cart-button', function () {
+    alert("??");
     $.ajax({
       method: "POST",
       url: 'cart/' + $(this).data('id')
@@ -31,7 +31,7 @@ $(function () {
   });
   function getProduct(paginate) {
     var form = $('form.sidebar-filter').serialize(); // serialize() wezmie tylko zaznaczone pola!
-    // console.log(form);
+    // console.log("test123");
 
     $.ajax({
       method: "GET",
@@ -42,7 +42,7 @@ $(function () {
     }).done(function (response) {
       $('div#products-wrapper').empty();
       $.each(response.data, function (index, product) {
-        var html = '<div class="col-6 col-md-6 col-lg-4 mb-3">' + '<div class="card h-100 border-0">' + '<div class="card-img-top">' + '<img src="' + getImage(product) + '" class="img-fluid mx-auto d-block" alt="Prodcut img">' + '</div>' + '<div class="card-body text-center">' + '<h4 class="card-title">' + product.name + '</h4>' + '<h5 class="card-price small text-warning">' + '<i>PLN ' + product.price + '</i>' + '</h5>' + '</div>' + '</div>' + '</div>';
+        var html = '<div class="col-6 col-md-6 col-lg-4 mb-3">' + '<div class="card h-100 border-0">' + '<div class="card-img-top">' + '<img src="' + getImage(product) + '" class="img-fluid mx-auto d-block" alt="Prodcut img">' + '</div>' + '<div class="card-body text-center">' + '<h4 class="card-title">' + product.name + '</h4>' + '<h5 class="card-price small text-warning">' + '<i>PLN ' + product.price + '</i>' + '</h5>' + '<button class="btn btn-success btn-sm add-cart-button" ' + getDisabled() + ' data-id="' + product.id + '">' + '<i class="fa-solid fa-cart-shopping">Add to cart ?? </i>' + '</button>' + '</div>' + '</div>' + '</div>';
         $('div#products-wrapper').append(html);
       });
     }).fail(function (data) {
@@ -54,6 +54,12 @@ $(function () {
       return storage + product.img_path;
     }
     return default_img;
+  }
+  function getDisabled() {
+    if (is_guest) {
+      return 'disabled';
+    }
+    return '';
   }
 });
 /******/ })()

@@ -66,6 +66,11 @@ class CartItem{
         return $this->img_path;
     }
 
+    public function getImg()
+    {
+        return !is_null($this->img_path) ? asset('storage/'. $this->img_path) : config("shop.default_img");
+    }
+
     public function addQuantity(Product $product): CartItem 
     {
         return new CartItem($product, ++$this->quantity);

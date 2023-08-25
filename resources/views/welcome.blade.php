@@ -3,6 +3,7 @@
 @section('content')
 
 <div class="container pt-5">
+              <!-- <h1> {{ $isGuest }} </h1> -->
               <div class="row">
                 <div class="col-md-8 order-md-2 col-lg-9">
                   <div class="container-fluid">
@@ -53,7 +54,7 @@
                                 <i>PLN{{ $product->price}}</i>
                               </h5>
                               <button class="btn btn-success btn-sm add-cart-button" data-id="{{ $product->id }}" @guest disabled @endguest>
-                                <i class="fa-solid fa-cart-shopping"></i> Add to cart
+                                <i class="fa-solid fa-cart-shopping"> Add to cart</i> 
                               </button>
                             </div>
                           </div>
@@ -116,8 +117,10 @@
     const storage = '{{ asset('storage') }}/';
     const default_img = '{{ $default_img }}';
     const add_to_cart = '{{ url('cart-store') }}/';
+    const is_guest = '{{ $isGuest }}';
   </script>
 @endsection
 @section('js-files')
   <script src="{{ asset('js/welcome.js') }}"></script>
+  
 @endsection

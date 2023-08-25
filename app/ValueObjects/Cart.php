@@ -22,6 +22,13 @@ class Cart{
         return $this->items;
     }
 
+    public function getSum()
+    {
+        return $this->items->sum(function ($item){
+            return $item->getSum();
+        });
+    }
+
     public function addItem(Product $product): Cart
     {
         $items = $this->items;
@@ -39,6 +46,12 @@ class Cart{
         return new Cart($items);
        
     } 
+
+    public function removeItem(Product $product): Cart
+    {
+        $items = $this->items->reject($this->areProductsSame($product));
+        return new Cart($items);
+    }
 
     private function areProductsSame(Product $product){
         return function ($item) use ($product){
