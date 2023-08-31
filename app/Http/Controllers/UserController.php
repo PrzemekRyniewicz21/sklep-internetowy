@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\UpdateUserRequest;
+use App\Models\Address;
 use App\Models\User;
-use Facade\FlareClient\View;
 use Illuminate\Http\Request;
 
 class UserController extends Controller
@@ -58,9 +59,13 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(User $user)
     {
-        //
+        // $address = $user->address;
+        // dd($address);
+        return view('users.edit',[
+            'user' => $user,
+        ]);
     }
 
     /**
@@ -70,9 +75,23 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(UpdateUserRequest $request, User $user)
     {
-        //
+        $addressValidated = $request->validated()['address'];
+        // dd($addressValidated);
+
+        //jesli user bedzie mial juz adres, to aktualizacja, jesli nie, tworzymy obiekt
+
+        if($user->hasAddress()){
+            $address = $user->address;
+            $address->fill($addressValidated);
+        } else {
+            $address = new Address($addressValidated);
+        }
+        $user->address()->save($address);
+
+        return redirect(route('users.index'))->with('status', 'product stored');
+
     }
 
     /**
@@ -86,7 +105,7 @@ class UserController extends Controller
         User::find($request->user_id)
             ->delete();
 
-        return redirect(route('users-list'))
+        return redirect(route('users.index'))
             ->with([
                 'msg' => 'User Deleted'
             ]);

@@ -30,11 +30,18 @@
             <td>{{ $user->email }}</td>
             <td>{{ $user->phone_number }}</td>
             <td>
-                <form action="{{route('user_delete')}}" method="get">
-                    <button name="user_id" value="{{$user->id}}">
+                <a href="{{ route('users.edit', $user->id) }}">
+                    <button class="btn btn-primary btn-sm">
+                        <i class="fa-regular fa-pen-to-square"></i>
+                    </button>
+                </a>
+                <form action="{{ route('users.destroy', $user->id) }}" method="post">
+                    @method('delete')
+                    <button type="submit" name="user_id" value="{{ $user->id }}">
                         <i class="fa-solid fa-trash"></i>
                     </button>
                 </form>
+
             </td>
         </tbody>
         @endforeach

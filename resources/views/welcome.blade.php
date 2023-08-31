@@ -3,7 +3,6 @@
 @section('content')
 
 <div class="container pt-5">
-              <!-- <h1> {{ $isGuest }} </h1> -->
               <div class="row">
                 <div class="col-md-8 order-md-2 col-lg-9">
                   <div class="container-fluid">

@@ -45,9 +45,13 @@ Route::middleware(['auth', 'verified'])->group(function() {
             Route::post('/{product}', [ProductController::class, 'update'])->name('products-update');
             Route::delete('/{product}', [ProductController::class, 'destroy'])->name('product-delete');
         });
+        
+        Route::resource('users', UserController::class)->only([
+            'destroy', 'index', 'update', 'edit'
+        ]);
 
-        Route::get('/users',[UserController::class, 'destroy'])->name('user_delete');
-        Route::get('/home/users-list', [UserController::class, 'index'])->name('users-list');
+        // Route::get('/users',[UserController::class, 'destroy'])->name('user_delete');
+        // Route::get('/home/users-list', [UserController::class, 'index'])->name('users-list');
     }); 
     
     Route::get('/cart', [CartController::class, 'index'])->name('cart-index');

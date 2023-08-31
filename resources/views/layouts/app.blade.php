@@ -62,7 +62,7 @@
 
                                     @can('isAdmin')
                                         <a class="dropdown-item" href="{{ route('products-list') }}">Products List</a>
-                                        <a class="dropdown-item" href="{{ route('users-list') }}">User List</a>
+                                        <a class="dropdown-item" href="{{ route('users.index') }}">User List</a>
                                     @endcan
 
                                     <a class="dropdown-item" href="{{ route('logout') }}"
