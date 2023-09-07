@@ -35,6 +35,7 @@ class OrderController extends Controller
         $order = new Order();
         $order->amount = $cart->getQuantity();
         $order->price = $cart->getSum();
+        $order->quantity = $cart->getQuantity();
         $order->user_id = Auth::id();
         $order->save();
 
