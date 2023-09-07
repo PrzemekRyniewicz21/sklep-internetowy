@@ -28,6 +28,12 @@ class Cart{
             return $item->getSum();
         });
     }
+    public function getQuantity()
+    {
+        return $this->items->sum(function ($item){
+            return $item->getQuantity();
+        });
+    }
 
     public function addItem(Product $product): Cart
     {

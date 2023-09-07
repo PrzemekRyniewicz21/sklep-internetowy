@@ -6,6 +6,7 @@ use App\Http\Controllers\CartController;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\HelloController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\WelcomeController;
@@ -57,6 +58,12 @@ Route::middleware(['auth', 'verified'])->group(function() {
     Route::get('/cart', [CartController::class, 'index'])->name('cart-index');
     Route::post('/cart/{product}', [CartController::class, 'store'])->name('cart-store');
     Route::delete('/cart/{product}', [CartController::class, 'destroy'])->name('cart-delete');
+
+    Route::get('/orders', [OrderController::class, 'index'])->name('order.index');
+    Route::post('/orders', [OrderController::class, 'store'])->name('order.store');
+
+
+
     Route::get('/home', [HomeController::class, 'index'])->name('home');
 
     
