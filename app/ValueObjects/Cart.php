@@ -22,6 +22,11 @@ class Cart{
         return $this->items;
     }
 
+    public function hasItems(): bool
+    {
+        return !($this->items->isEmpty());
+    }
+
     public function getSum()
     {
         return $this->items->sum(function ($item){

@@ -29,7 +29,6 @@
         </tr>
         </thead>
         @foreach ($orders as $order)
-        {{dd($order)}}
         <tbody>
             <tr>
                 <th scope="row">{{ $order->id }}</th>

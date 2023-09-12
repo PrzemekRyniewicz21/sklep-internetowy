@@ -15,7 +15,7 @@
                         <div class="cart_title">Shopping Cart<small> {{ $cart->getItems()->count() }}</small></div>
                         <!-- <form action="{{ route('order.store') }}" method="POST" id="order-form"> -->
 
-                            <!-- @csrf -->
+                            @csrf
 
                             <div class="cart_items">
                                 <ul class="cart_list">
@@ -42,7 +42,7 @@
                                             <div class="cart_info_col">
                                                 <form style="float:right" action="{{ route('cart-delete', $item->getProductId()) }}" method="POST" onsubmit="return confirm('Czy na pewno chcesz usunąć ten produkt?')" id="inside-form">
                                                     @method('DELETE')
-                                                    <!-- @csrf -->
+                                                    @csrf
                                                     <button type="submit" class="btn btn-danger btn-sm delete">
                                                         <i class="fa-solid fa-trash">??</i>
                                                     </button>
@@ -59,15 +59,16 @@
                                     <div class="order_total_amount">{{ $cart->getSum() }}</div>
                                 </div>
                             </div>
-                            <div class="cart_buttons"> 
-                                <a href="/" class="button cart_button_clear">Continue Shopping</a> 
+
+                            <div class="d-flex mt-4 justify-content-between align-items-center">
+                                <a href="/" class="button cart_button_checkout text-decoration-none">Continue Shopping</a> 
                                 <form action="{{route('order.store')}}" method="POST" id="store-form">
                                     @csrf
-                                    <button type="submit" class="button cart_button_checkout">Pay</button> 
+                                    <button type="submit" class="button cart_button_checkout" {{ $cart->hasItems() ? '' : 'disabled'}}>Pay</button> 
                                 </form>
                             </div>
+                           
                         <!-- </form> -->
-
                         
                     </div>
                 </div>

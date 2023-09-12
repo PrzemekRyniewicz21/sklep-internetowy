@@ -51,8 +51,6 @@ Route::middleware(['auth', 'verified'])->group(function() {
             'destroy', 'index', 'update', 'edit'
         ]);
 
-        // Route::get('/users',[UserController::class, 'destroy'])->name('user_delete');
-        // Route::get('/home/users-list', [UserController::class, 'index'])->name('users-list');
     }); 
     
     Route::get('/cart', [CartController::class, 'index'])->name('cart-index');
@@ -65,6 +63,5 @@ Route::middleware(['auth', 'verified'])->group(function() {
 
 
     Route::get('/home', [HomeController::class, 'index'])->name('home');
-
     
 });
