@@ -7,7 +7,11 @@ $(function () {
   
   $('div.dropdown-menu a').on('click', function(){
     $('a.actual-dropdown-toggle').text($(this).text());
-    getProduct($(this).text());
+    const p = $('a.products-actual-count').first().text();
+    const sort = $('a.actual-dropdown-toggle').text();
+
+    getProduct(p, sort);
+     
   });
   
   $('div.products-count a').on('click', function(){
@@ -16,7 +20,7 @@ $(function () {
   });
 
   $('a#button').on('click', function () {
-    alert("??");
+    // alert("??");
     getProduct($('a.products-actual-count').first().text()); // first() dlatego, ze mamy dwa elementy a.products-actual-count na naszej stronie
   });
   
@@ -34,18 +38,20 @@ $(function () {
     });
 });
 
-  function getProduct(paginate, sort = null){
+  function getProduct(paginate = 1, sort = "asc"){
     const form = $('form.sidebar-filter').serialize(); // serialize() wezmie tylko zaznaczone pola!
     // console.log("test123");
 
     $.ajax({
         method: "GET",
         url: "/",
-        data: form + "&" + $.param({paginate: paginate})
-        // data: form + "&" + $.param({paginate: paginate}) + "&" + $.param({sort: sort})
+        // data: form + "&" + $.param({paginate: paginate})
+        data: form + "&" + $.param({paginate: paginate}) + "&" + $.param({sort: sort})
 
     }).done(function (response){
+        console.log(response.data);
         $('div#products-wrapper').empty();
+        
         $.each(response.data, function (index, product){
           
           const html = 

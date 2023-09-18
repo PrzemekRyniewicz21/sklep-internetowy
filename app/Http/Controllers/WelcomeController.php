@@ -7,6 +7,8 @@ use App\Models\ProductCategory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
+use Illuminate\Support\Facades\Log;
+
 class WelcomeController extends Controller
 {
     /**
@@ -18,10 +20,12 @@ class WelcomeController extends Controller
     {
         $filters = $request->query('filter');
         $paginate = $request->query('paginate') ?? 5;
+        $sort = $request->query('sort') ?? 'desc';
         $query = Product::query();
-        
 
         if(!is_null($filters)){
+
+            Log::info($request);
 
             if(array_key_exists('categories', $filters)){
                 $query = $query->whereIn('category_id', $filters['categories']);
@@ -35,9 +39,7 @@ class WelcomeController extends Controller
                 $query = $query->where('price', '<=', $filters['price_max']);
             }
 
-            if(!is_null($filters['asc'])){
-                $query = $query->orderBy('price', 'asc');
-            }
+            $query = $query->orderBy('price', $sort);
 
             return response()->json($query->paginate($paginate));
         }
