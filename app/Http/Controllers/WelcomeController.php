@@ -20,7 +20,6 @@ class WelcomeController extends Controller
         $paginate = $request->query('paginate') ?? 5;
         $query = Product::query();
         
-        // dd($filters['price_min']);
 
         if(!is_null($filters)){
 
@@ -34,6 +33,10 @@ class WelcomeController extends Controller
 
             if(!is_null($filters['price_max'])){
                 $query = $query->where('price', '<=', $filters['price_max']);
+            }
+
+            if(!is_null($filters['asc'])){
+                $query = $query->orderBy('price', 'asc');
             }
 
             return response()->json($query->paginate($paginate));

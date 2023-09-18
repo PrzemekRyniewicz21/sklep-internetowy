@@ -9,6 +9,10 @@ var __webpack_exports__ = {};
 //})
 
 $(function () {
+  $('div.dropdown-menu a').on('click', function () {
+    $('a.actual-dropdown-toggle').text($(this).text());
+    getProduct($(this).text());
+  });
   $('div.products-count a').on('click', function () {
     $('a.products-actual-count').text($(this).text());
     getProduct($(this).text());
@@ -30,6 +34,7 @@ $(function () {
     });
   });
   function getProduct(paginate) {
+    var sort = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
     var form = $('form.sidebar-filter').serialize(); // serialize() wezmie tylko zaznaczone pola!
     // console.log("test123");
 
@@ -39,6 +44,7 @@ $(function () {
       data: form + "&" + $.param({
         paginate: paginate
       })
+      // data: form + "&" + $.param({paginate: paginate}) + "&" + $.param({sort: sort})
     }).done(function (response) {
       $('div#products-wrapper').empty();
       $.each(response.data, function (index, product) {

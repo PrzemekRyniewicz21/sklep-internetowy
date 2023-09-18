@@ -3,9 +3,12 @@
 //
 //})
 
-
-
 $(function () {
+  
+  $('div.dropdown-menu a').on('click', function(){
+    $('a.actual-dropdown-toggle').text($(this).text());
+    getProduct($(this).text());
+  });
   
   $('div.products-count a').on('click', function(){
      $('a.products-actual-count').text($(this).text()); 
@@ -16,7 +19,7 @@ $(function () {
     alert("??");
     getProduct($('a.products-actual-count').first().text()); // first() dlatego, ze mamy dwa elementy a.products-actual-count na naszej stronie
   });
-
+  
   $('div#products-wrapper').on('click', 'button.add-cart-button', function () {
     alert("??");
     $.ajax({
@@ -31,7 +34,7 @@ $(function () {
     });
 });
 
-  function getProduct(paginate){
+  function getProduct(paginate, sort = null){
     const form = $('form.sidebar-filter').serialize(); // serialize() wezmie tylko zaznaczone pola!
     // console.log("test123");
 
@@ -39,6 +42,7 @@ $(function () {
         method: "GET",
         url: "/",
         data: form + "&" + $.param({paginate: paginate})
+        // data: form + "&" + $.param({paginate: paginate}) + "&" + $.param({sort: sort})
 
     }).done(function (response){
         $('div#products-wrapper').empty();
