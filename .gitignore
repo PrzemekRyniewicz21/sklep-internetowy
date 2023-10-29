@@ -22,7 +22,11 @@ Homestead.json
 /.vagrant
 .phpunit.result.cache
 
+<<<<<<< HEAD
 Dockerfile
+=======
+DockerFile
+>>>>>>> 7c64ea0 (git ignore docker)
 docker-compose.yml
 docker/
 
