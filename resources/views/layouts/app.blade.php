@@ -60,35 +60,36 @@
                         @else
                             <li class="nav-item dropdown">
 
-                            <div class="navbar">
-                                <a href="{{ route('cart-index') }}" class="nav-link mr-2">
-                                    <i class="fa-solid fa-cart-shopping fa-xl"></i>
-                                </a> 
-                                <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
-                                    <i class="fa-regular fa-user"></i> {{ Auth::user()->name }}
-                                </a>
-                            </div>
-
-
-                                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-
-                                    @can('isAdmin')
-                                        <a class="dropdown-item" href="{{ route('products-list') }}">Products List</a>
-                                        <a class="dropdown-item" href="{{ route('users.index') }}">User List</a>
-                                    @endcan
-
-                                    <a class="dropdown-item" href="{{ route('order.index') }}">Orders</a>
-
-                                    <a class="dropdown-item" href="{{ route('logout') }}"
-                                       onclick="event.preventDefault();
-                                                     document.getElementById('logout-form').submit();">
-                                        {{ __('Logout') }}
+                                <div class="navbar">
+                                    <a href="{{ route('cart-index') }}" class="nav-link mr-2">
+                                        <i class="fa-solid fa-cart-shopping fa-xl"></i>
+                                    </a>
+                                    <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                                        <i class="fa-regular fa-user"></i> {{ Auth::user()->name }}
                                     </a>
 
-                                    <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
-                                        @csrf
-                                    </form>
+                                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown" >
+
+                                        @can('isAdmin')
+                                            <a class="dropdown-item" href="{{ route('products-list') }}">Products List</a>
+                                            <a class="dropdown-item" href="{{ route('users.index') }}">User List</a>
+                                        @endcan
+
+                                        <a class="dropdown-item" href="{{ route('order.index') }}">Orders</a>
+
+                                        <a class="dropdown-item" href="{{ route('logout') }}"
+                                           onclick="event.preventDefault();
+                                                         document.getElementById('logout-form').submit();">
+                                            {{ __('Logout') }}
+                                        </a>
+
+                                        <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                                            @csrf
+                                        </form>
+                                    </div>
+
                                 </div>
+
                             </li>
                         @endguest
                     </ul>
@@ -101,7 +102,7 @@
             @yield('content')
         </main>
     </div>
-    
+
     @yield('js-files')
 </body>
 </html>
