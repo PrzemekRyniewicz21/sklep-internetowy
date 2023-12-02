@@ -9,6 +9,8 @@ var __webpack_exports__ = {};
 //})
 
 $(function () {
+  // alert("???");
+
   $('div.dropdown-menu a').on('click', function () {
     $('a.actual-dropdown-toggle').text($(this).text());
     var p = $('a.products-actual-count').first().text();
@@ -25,7 +27,7 @@ $(function () {
   });
 
   $('div#products-wrapper').on('click', 'button.add-cart-button', function () {
-    alert("??");
+    // alert("??");
     $.ajax({
       method: "POST",
       url: 'cart/' + $(this).data('id')
@@ -51,14 +53,14 @@ $(function () {
         sort: sort
       })
     }).done(function (response) {
-      console.log(response.data);
+      // console.log(response.data);
       $('div#products-wrapper').empty();
       $.each(response.data, function (index, product) {
         var html = '<div class="col-6 col-md-6 col-lg-4 mb-3">' + '<div class="card h-100 border-0">' + '<div class="card-img-top">' + '<img src="' + getImage(product) + '" class="img-fluid mx-auto d-block" alt="Prodcut img">' + '</div>' + '<div class="card-body text-center">' + '<h4 class="card-title">' + product.name + '</h4>' + '<h5 class="card-price small text-warning">' + '<i>PLN ' + product.price + '</i>' + '</h5>' + '<button class="btn btn-success btn-sm add-cart-button" ' + getDisabled() + ' data-id="' + product.id + '">' + '<i class="fa-solid fa-cart-shopping">Add to cart ?? </i>' + '</button>' + '</div>' + '</div>' + '</div>';
         $('div#products-wrapper').append(html);
       });
     }).fail(function (data) {
-      alert("ERROR");
+      // alert("ERR");
     });
   }
   function getImage(product) {
