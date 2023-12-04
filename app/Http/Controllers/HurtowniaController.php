@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Http;
 use App\Models\ProductCategory;
 use App\Models\Product;
 use GuzzleHttp\Handler\Proxy;
+use Illuminate\Contracts\Session\Session;
 use Illuminate\Support\Facades\Log;
 
 class HurtowniaController extends Controller

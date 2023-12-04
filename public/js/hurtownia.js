@@ -23,7 +23,7 @@ $(function () {
       url: "/hurtownia/add_element",
       data: parameters
     }).done(function (response) {
-      window.location.href = "/hurtownia/list?msg=Dodano";
+      window.location.href = "/hurtownia/list?msg=Added&name=" + parameters.name;
     }).fail(function (error) {
       console.error("Error:", error);
       alert("Wystąpił błąd");

@@ -3,11 +3,18 @@
 @section('content')
 <div class="container">
 
-    @include('helpers.messages')
+    <!-- @include('helpers.messages') -->
+
+    @if(isset($_GET['msg']))
+    <div class="alert alert-success" role="alert">
+        <?php echo $_GET['msg']; ?>
+        product - <?php echo $_GET['name']; ?>
+    </div>
+    @endif
 
     <div class="row">
         <div class="col-6">
-            <h1><i class="fa-solid fa-list"></i> Product list</h1>
+            <h1><i class="fa-solid fa-list"></i> Hurtownia - products list</h1>
         </div>
         <div class="col-6">
             <a href="{{ route('products-create') }}" class="float-right">
