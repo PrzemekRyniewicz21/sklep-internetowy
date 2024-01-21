@@ -6,8 +6,12 @@ use App\Models\Product;
 use App\Models\ProductCategory;
 use Illuminate\Http\Request;
 use App\Http\Requests\StoreProductRequest;
+use App\Http\Requests\UpdateUserRequest;
+use App\Models\Categories;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Log;
+use App\Exceptions\ShopExcetion as Exception;
 
 
 class ProductController extends Controller
@@ -19,12 +23,11 @@ class ProductController extends Controller
      */
     public function index()
     {
-        // dd("??");
-        $products = Product::paginate(5);
-        
-        return view('products.index',[
+        $products = Product::paginate(30);
+
+        return response()->view('products.index', [
             'products' => $products
-        ]);
+        ], 200);
     }
 
     /**
@@ -35,8 +38,8 @@ class ProductController extends Controller
     public function create()
     {
         // dd("??");
-        
-        $categories = ProductCategory::all();
+
+        $categories = Categories::all();
 
         return view('products.create')->with([
             'categories' => $categories,
@@ -51,15 +54,20 @@ class ProductController extends Controller
      */
     public function store(StoreProductRequest $request)
     {
-        // dd("???");
+        // dane od administrator podane w form /poducts/create
+        $data_from_form = $request->validated();
 
-        $product = new Product($request->validated());
+        // collect - po to by uzyc except() aby nie dodawac category_id
+        $product = new Product(collect($data_from_form)->except('category_id')->toArray());
 
-        if($request->hasFile('img')){
+        if ($request->hasFile('img')) {
             $product->img_path = $request->file('img')->store('public');
         }
 
         $product->save();
+
+        // przypisanie odpowiedniej kategori
+        $product->categories()->attach($data_from_form['category_id']);
 
         return redirect(route('products-list'))->with('status', 'product stored');
     }
@@ -72,9 +80,11 @@ class ProductController extends Controller
      */
     public function show(Product $product)
     {
-        return view("products.show",[
+        $categories = Product::find($product->id)->categories()->get()->pluck('name');
+
+        return view("products.show", [
             'product' => $product,
-            'categories' => ProductCategory::all(),
+            'categories' => $categories,
         ]);
     }
 
@@ -87,10 +97,11 @@ class ProductController extends Controller
     public function edit(Product $product)
     {
         // dd($product);
+        $categories = Product::find($product->id)->categories()->get()->pluck('name');
 
-        return view("products.edit",[
+        return view("products.edit", [
             'product' => $product,
-            'categories' => ProductCategory::all(),
+            'categories' => $categories,
         ])->with('status', 'Product edited!');
     }
 
@@ -101,21 +112,20 @@ class ProductController extends Controller
      * @param  \App\Models\Product  $product
      * @return \Illuminate\Http\Response
      */
-    public function update(StoreProductRequest $request, Product $product)
+    public function update(Request $request, Product $product)
     {
-        $old_img_path = $product->img_path;
+        $validated_data = $request; // BRAK WALIDACJI - DO ZROBIENIA !!!
 
-        $product->fill($request->validated());
-        
-        if($request->hasFile('img')){
-            if(Storage::exists($old_img_path)){
-                Storage::delete($old_img_path);
-            }
-            $product->img_path = $request->file('img')->store('public');
-        }
+        $product->name = $validated_data['name'];
+        $product->short_description = $validated_data['short_description'];
+        $product->amount =  $validated_data['amount'];
+        $product->price = (float)$validated_data['price']; // decimal
+
+        //edycja kategori - DO ZROBIENIA
+        // $categories = $request['categories'];
 
         $product->save();
-        // dd("???");
+
         return redirect(route('products-list'))->with('status', 'product stored');
     }
 
@@ -128,12 +138,12 @@ class ProductController extends Controller
     public function destroy(Product $product)
     {
         // dd("???");
-        try{
+        try {
+            $product->orders()->detach();
             $product->delete();
             Session::flash('status', 'Product deleted!');
             return redirect(route('products-list'));
-            
-        } catch (Exception $e){
+        } catch (Exception $e) {
             return response()->json([
                 'status' => 'error',
                 'message' => 'Error accured!'
@@ -150,8 +160,8 @@ class ProductController extends Controller
      */
     public function download_img(Product $product)
     {
-        if(Storage::exists($product->img_path)){
-                return Storage::download($product->img_path);
+        if (Storage::exists($product->img_path)) {
+            return Storage::download($product->img_path);
         }
         return redirect()->back();
     }

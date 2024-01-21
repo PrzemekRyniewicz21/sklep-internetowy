@@ -1,6 +1,6 @@
 // bład servera 500 - na ten moement nie wiem jak to naprawic :/
 // wiec uzyje metody get
-// edit - problem polegał na dd() w funkcji store w controlerze, ktore przerywalo działanie ajax'a
+// edit - problem polegał na dd() w funkcji store w HurtowniaController, ktore przerywalo działanie ajax'a
 
 $(function () {
     alert("?");
@@ -8,10 +8,12 @@ $(function () {
         const parameters = {
             id: $(this).find('[name="id"]').html(),
             name: $(this).find('[name="name_"]').html(),
+            short_description: $(this).find('[name="short_description"]').html(),
             description: $(this).find('[name="description"]').html(),
             amount: $(this).find('[name="amount"]').html(),
             price: $(this).find('[name="price"]').html(),
-            category: $(this).find('[name="category"]').html()
+            category: $(this).find('[name="category"]').html(),
+            genres: $(this).find('[name="genres"]').html(),
         };
 
         $.ajax({
@@ -24,7 +26,7 @@ $(function () {
 
         }).fail(function (error) {
             console.error("Error:", error);
-            alert("Wystąpił błąd");
+            // alert("Wystąpił błąd");
 
         });
     });

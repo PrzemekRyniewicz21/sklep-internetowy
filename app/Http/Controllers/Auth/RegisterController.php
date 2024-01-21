@@ -55,6 +55,14 @@ class RegisterController extends Controller
             'phone' => ['digits:9'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:4', 'confirmed'],
+            'city' => ['required', 'string', 'max:255'],
+            'zip_code' => ['required', 'string', 'max:10'],
+            'street' => ['required', 'string', 'max:255'],
+            'home_number' => ['required', 'string', 'max:255'], 'name' => ['required', 'string', 'max:255'],
+            'surname' => ['required', 'string', 'max:255'],
+            'phone' => ['digits:9'],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            'password' => ['required', 'string', 'min:4', 'confirmed'],
         ]);
     }
 
@@ -66,12 +74,33 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
-        return User::create([
+        // Walidacja danych przy użyciu funkcji validator
+        $validator = $this->validator($data);
+
+        // Validator::class ma metode fails(), ktora zwraca stan logiczny   
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+
+        $user = User::create([
             'name' => $data['name'],
             'surname' => $data['surname'],
             'phone_number' => $data['phone'],
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
         ]);
+
+        $user->address()->create([
+            'city' => $data['city'],
+            'zip_code' => $data['zip_code'],
+            'street' => $data['street'],
+            'home_no' => $data['home_number'],
+        ]);
+
+        //  po zarejestrowaniu użytkownika, aplikacja próbuje go automatycznie zalogować 
+        //  ale otrzymuje null zamiast obiektu implementującego 
+        //  interfejs Illuminate\Contracts\Auth\Authenticatable
+        // dlatego musimy zwrocic usera - return $user
+        return $user;
     }
 }

@@ -5,7 +5,7 @@
 
 $(function () {
 
-    // alert("???");
+
 
     $('div.dropdown-menu a').on('click', function () {
         $('a.actual-dropdown-toggle').text($(this).text());
@@ -33,10 +33,28 @@ $(function () {
             url: 'cart/' + $(this).data('id')
 
         }).done(function () {
-            alert("Dodano");
+            alert("Added to cart");
 
         }).fail(function () {
             alert("Err");
+        });
+    });
+
+
+    //order/admin - przysik zmiany statusu zamowienia
+    $('button#change-status').on('click', function () {
+        const id = $(this).val();
+
+        $(this).attr('class', 'btn btn-outline-success');
+        $(this).text("Sent");
+
+        $.ajax({
+            method: "PUT",
+            url: "orders/" + id,
+        }).done(function () {
+            alert("Update statusu");
+        }).fail(function () {
+            alert("Update statusu - FAIL");
         });
     });
 
@@ -64,7 +82,7 @@ $(function () {
                     '</div>' +
                     '<div class="card-body text-center">' +
                     '<h4 class="card-title">' +
-                    product.name +
+                    '<a href="' + getProductLink(product) + '">' + product.name + '</a>' +
                     '</h4>' +
                     '<h5 class="card-price small text-warning">' +
                     '<i>PLN ' + product.price + '</i>' +
@@ -84,6 +102,14 @@ $(function () {
         }).fail(function (data) {
             // alert("ERR");
         });
+    }
+
+    function getProductLink(product) {
+        // chcialem zeby nazwa produktu linkowala do podglądu, ale nie da se po porostu zrobic w js tego w ten sposob:
+        // <a href="{{ route('products-show', $product->id) }}">{{ $product->name }}</a> - przyklad z welcome.blade.php
+        // dlatego stworzylem osobną funkcje, która zwraca cos takiego:
+
+        return "/products/id".replace('id', product.id);
     }
 
     function getImage(product) {

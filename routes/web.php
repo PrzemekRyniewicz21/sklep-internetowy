@@ -27,12 +27,12 @@ use Illuminate\Support\Facades\Route;
 
 Auth::routes(['verify' => true]);
 
-
-Route::get('/', [WelcomeController::class, 'index']);
-Route::get('/hello', [HelloController::class, 'show']);
+// Dostepne dla niezalogowanych
+Route::get('/', [WelcomeController::class, 'index'])->name('welcome.index');
+Route::get('products/{product}', [ProductController::class, 'show'])->name('products-show');
 
 // TYMCZASOWO
-Route::get('hurt/list', [HurtowniaController::class, 'index'])->name('hurtownia.index');
+// Route::get('hurt/list', [HurtowniaController::class, 'index'])->name('hurtownia.index');
 
 Route::middleware(['auth', 'verified'])->group(function () {
 
@@ -41,24 +41,26 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('products/{product}/donwload', [ProductController::class, 'download_img'])->name('products-download-img');
 
         Route::prefix('products')->group(function () {
+
             Route::get('/', [ProductController::class, 'index'])->name('products-list');
             Route::get('/create', [ProductController::class, 'create'])->name('products-create');
             Route::post('/', [ProductController::class, 'store'])->name('products-store');
-            Route::get('/{product}', [ProductController::class, 'show'])->name('products-show');
             Route::get('/edit/{product}', [ProductController::class, 'edit'])->name('products-edit'); // {product} model binding !!!
-            Route::post('/{product}', [ProductController::class, 'update'])->name('products-update');
+            Route::put('/{product}', [ProductController::class, 'update'])->name('products-update');
+
             Route::delete('/{product}', [ProductController::class, 'destroy'])->name('product-delete');
         });
 
         Route::prefix('hurtownia')->group(function () {
 
             Route::get('/list', [HurtowniaController::class, 'index'])->name('hurtownia.index');
-            Route::post('/add_element', [HurtowniaController::class, 'store2'])->name('hurtownia.store'); // problem z POST przez ajax dlatego GET
+            Route::post('/add_element', [HurtowniaController::class, 'store'])->name('hurtownia.store'); // naprawione 
+            Route::get('/game_des/{id}', [HurtowniaController::class, 'show'])->name('hurtownia.show');
         });
 
         Route::resource('users', UserController::class)->only([
 
-            'destroy', 'index', 'update', 'edit'
+            'index', 'update', 'edit', 'destroy'
 
         ]);
     });
@@ -69,8 +71,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::get('/orders', [OrderController::class, 'index'])->name('order.index');
     Route::post('/orders', [OrderController::class, 'store'])->name('order.store');
+    Route::put('/orders/{order}', [OrderController::class, 'update'])->name('order.update');
 
-
-
-    Route::get('/home', [HomeController::class, 'index'])->name('home');
+    // Route::get('/home', [HomeController::class, 'index'])->name('home');
 });

@@ -50,7 +50,6 @@ class UserController extends Controller
      */
     public function show($id)
     {
-
     }
 
     /**
@@ -63,7 +62,7 @@ class UserController extends Controller
     {
         // $address = $user->address;
         // dd($address);
-        return view('users.edit',[
+        return view('users.edit', [
             'user' => $user,
         ]);
     }
@@ -77,12 +76,13 @@ class UserController extends Controller
      */
     public function update(UpdateUserRequest $request, User $user)
     {
+        // dd("UserController");
         $addressValidated = $request->validated()['address'];
         // dd($addressValidated);
 
         //jesli user bedzie mial juz adres, to aktualizacja, jesli nie, tworzymy obiekt
 
-        if($user->hasAddress()){
+        if ($user->hasAddress()) {
             $address = $user->address;
             $address->fill($addressValidated);
         } else {
@@ -91,7 +91,6 @@ class UserController extends Controller
         $user->address()->save($address);
 
         return redirect(route('users.index'))->with('status', 'product stored');
-
     }
 
     /**
@@ -102,6 +101,7 @@ class UserController extends Controller
      */
     public function destroy(Request $request)
     {
+        // dd("???");
         User::find($request->user_id)
             ->delete();
 

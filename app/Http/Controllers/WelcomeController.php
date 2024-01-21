@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
-use App\Models\ProductCategory;
+use App\Models\Categories;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -19,23 +19,29 @@ class WelcomeController extends Controller
     public function index(Request $request)
     {
         $filters = $request->query('filter');
-        $paginate = $request->query('paginate') ?? 5;
+        $paginate = $request->query('paginate') ?? 500;
         $sort = $request->query('sort') ?? 'desc';
+        // $sort = 'asc';
         $query = Product::query();
 
-        if(!is_null($filters)){
+        if (!is_null($filters)) {
 
-            Log::info($request);
+            Log::channel('debug')->info($filters);
 
-            if(array_key_exists('categories', $filters)){
-                $query = $query->whereIn('category_id', $filters['categories']);
+            if (array_key_exists('categories', $filters)) {
+                $category_ids = $filters['categories'];
+                $query = $query->orWhereHas('categories', function ($query) use ($category_ids) {
+
+                    //WHERE category_id IN (val1, val2, val3, ...)
+                    $query->whereIn('category_id', $category_ids);
+                });
             }
 
-            if(!is_null($filters['price_min'])){
+            if (!is_null($filters['price_min'])) {
                 $query = $query->where('price', '>=', $filters['price_min']);
             }
 
-            if(!is_null($filters['price_max'])){
+            if (!is_null($filters['price_max'])) {
                 $query = $query->where('price', '<=', $filters['price_max']);
             }
 
@@ -43,15 +49,14 @@ class WelcomeController extends Controller
 
             return response()->json($query->paginate($paginate));
         }
-        
-        $categories = ProductCategory::orderBy('name')->get();
-        
-        return view('welcome',[
+
+        $categories = Categories::orderBy('name')->get();
+
+        return view('welcome', [
             'products' => $query->paginate($paginate),
             'categories' => $categories,
             'default_img' => config('shop.default_img'),
             'isGuest' => Auth::guest(),
         ]);
     }
-
 }

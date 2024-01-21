@@ -4,11 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\ProductCategory;
+use App\Models\Categories;
 
 class Product extends Model
 {
-    use HasFactory;
+    use HasFactory; // od czego to jest ?
 
     protected $guarded = []; // mass assignment exception :/ 
 
@@ -22,19 +22,23 @@ class Product extends Model
 
     ];
 
-    public function category(){
-        return $this->belongsTo(ProductCategory::class);
+    public function categories()
+    {
+        return $this->belongsToMany(Categories::class, 'product_category', 'product_id', 'category_id');
     }
 
-    public function isSelectedCategory(int $category_id): bool {
+    public function isSelectedCategory(int $category_id): bool
+    {
         return $this->hasCategory() && ($this->category->id == $category_id);
     }
 
-    public function hasCategory(): bool {
+    public function hasCategory(): bool
+    {
         return !is_null($this->category);
     }
 
-    public function orders(){
+    public function orders()
+    {
         return $this->belongsToMany(Order::class);
     }
 }

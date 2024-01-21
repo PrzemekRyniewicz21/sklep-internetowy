@@ -3,8 +3,9 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Log;
 
-class StoreProductRequest extends FormRequest
+class UpdateProductRquest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,13 +24,12 @@ class StoreProductRequest extends FormRequest
      */
     public function rules()
     {
+        Log::channel('debug')->info("????");
         return [
             'name' => 'required|max:50',
-            'description' => 'required|max:1500',
-            'amount' => 'required|integer|min:0',
-            'price' => 'required|numeric',
-            'img' => 'nullable|image',
-            'category_id' => 'nullable|integer|min:0',
+            // 'short_description' => 'required|max:1500',
+            // 'amount' => 'required|integer|min:0',
+            // 'price' => 'required',
         ];
     }
 

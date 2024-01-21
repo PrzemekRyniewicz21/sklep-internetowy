@@ -16,13 +16,7 @@
         <div class="col-6">
             <h1><i class="fa-solid fa-list"></i> Hurtownia - products list</h1>
         </div>
-        <div class="col-6">
-            <a href="{{ route('products-create') }}" class="float-right">
-                <button class="btn btn-primary">
-                    <i class="fa-solid fa-plus"></i>
-                </button>
-            </a>
-        </div>
+
     </div>
 
     <div class="row">
@@ -31,10 +25,11 @@
                 <tr>
                     <th scope="col">#</th>
                     <th scope="col">Name</th>
-                    <th scope="col">Description</th>
+                    <th scope="col">Short description</th>
                     <th scope="col">Amount</th>
-                    <th scope="col">Price</th>
-                    <th scope="col">Category</th>
+                    <th scope="col">Price PLN</th>
+                    <th scope="col">Type</th>
+                    <th scope="col">Genres/Categories</th>
                     <th scope="col">Action</th>
 
                 </tr>
@@ -44,16 +39,30 @@
                 <tr class="access_js" id="{{ $product['id'] }}">
                     <td name="id">{{ $product['id']}}</td>
                     <td name="name_">{{ $product['name']}}</td>
-                    <td name="description">{{ $product['description']}}</td>
-                    <td name="amount">{{ $product['amount']}}</td>
-                    <td name="price">{{ $product['price']}}</td>
-                    <td name="category">{{ $product['category']}}</td>
+                    <td name="short_description">{{ $product['short_description'] ?? 'Brak krotkiego opisu'}}</td>
+                    <td name="amount">{{ $product['amount'] }}</td>
+                    <td name="price">{{ $product['price'] ?? 99}}</td>
+                    <td name="category">{{ $product['type']}}</td>
+                    <td name="description" class="d-none">{{ $product['description'] }}</td>
+                    <td name="genres">
+                        @foreach ($product['genres'] as $key => $genre)
+                        {{ $genre }},
+                        @endforeach
+                    </td>
+                    <!-- <td name="genre" data-genres="{{ json_encode($product['genres']) }}"></td> -->
                     <td>
 
-                        <button class="btn btn-primary">
-                            <i class="fa-solid fa-plus"></i>
+                        <div class="d-flex">
+                            <button class="btn btn-primary mr-2">
+                                <i class="fa-solid fa-plus fa-1x"></i>
+                            </button>
 
-                        </button>
+                            <a href="{{ route('hurtownia.show', $product['id']) }}">
+                                <button class="btn btn-primary btn-sm ">
+                                    <i class="fa-solid fa-magnifying-glass fa-2x"></i>
+                                </button>
+                            </a>
+                        </div>
 
                     </td>
                 </tr>
