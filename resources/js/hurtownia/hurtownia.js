@@ -5,6 +5,7 @@
 $(function () {
     alert("?");
     $('tr').on('click', function () {
+        alert("clicked");
         const parameters = {
             id: $(this).find('[name="id"]').html(),
             name: $(this).find('[name="name_"]').html(),
@@ -16,8 +17,11 @@ $(function () {
             genres: $(this).find('[name="genres"]').html(),
         };
 
+        alert(parameters.id);
+        alert(JSON.stringify(parameters, null, 2));
+
         $.ajax({
-            type: "POST",
+            method: "POST",
             url: "/hurtownia/add_element",
             data: parameters
 
@@ -26,7 +30,7 @@ $(function () {
 
         }).fail(function (error) {
             console.error("Error:", error);
-            // alert("Wystąpił błąd");
+            alert("Wystąpił błąd");
 
         });
     });

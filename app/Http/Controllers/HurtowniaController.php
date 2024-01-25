@@ -28,6 +28,7 @@ class HurtowniaController extends Controller
 
     public function index()
     {
+        Log::channel('debug')->info("hurtowniaC index");
         $response = $this->hurtowniaRepository->getAllProducts();
 
         return view("hurtownia.index", [
@@ -38,6 +39,7 @@ class HurtowniaController extends Controller
 
     public function store(Request $request)
     {
+        dd("????");
         Log::info("---------------");
         Log::info("HurtowniaController - store");
 
@@ -61,7 +63,23 @@ class HurtowniaController extends Controller
             $this->attachProductCategories($product, $genres);
         }, 5);
 
-        $this->hurtowniaRepository->updateProductInWarehouse($request['id']);
+        // $this->hurtowniaRepository->updateProductInWarehouse($request['id']);
+    }
+
+    public function show(Request $request)
+    {
+        $url = config('hurtownia.url.description');
+        $apiKey = config('hurtownia.api.key');
+
+        $response  = Http::withHeaders([
+            'Authorization' => $apiKey,
+        ])->get($url, ['id' => $request->id]);
+
+        // dd($response['description']);
+
+        return view('hurtownia.show')->with([
+            'description' => $response['description'] ?? 'No description',
+        ]);
     }
 
     // Pozostałe metody zostały przeniesione do odpowiednich repozytoriów
