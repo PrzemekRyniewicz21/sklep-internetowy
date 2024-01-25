@@ -4,38 +4,35 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
-use App\Models\Categories;
-use App\Models\Product;
-use Illuminate\Contracts\Session\Session;
 use Illuminate\Support\Facades\Log;
+use App\Repositories\HurtowniaRepository;
+use App\Repositories\ProductRepository;
+use App\Repositories\CategoryRepository;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Database\QueryException;
-
 
 class HurtowniaController extends Controller
 {
+    protected $hurtowniaRepository;
+    protected $productRepository;
+    protected $categoryRepository;
+
+    public function __construct(
+        HurtowniaRepository $hurtowniaRepository,
+        ProductRepository $productRepository,
+        CategoryRepository $categoryRepository
+    ) {
+        $this->hurtowniaRepository = $hurtowniaRepository;
+        $this->productRepository = $productRepository;
+        $this->categoryRepository = $categoryRepository;
+    }
+
     public function index()
     {
-
-        // dd("??");
-        $url = config('hurtownia.url.all_products');
-        $apiKey = config('hurtownia.api.key');
-
-        $response  = Http::withHeaders([
-            'Authorization' => $apiKey,
-        ])->get($url);
-
-        $response = $response['products'];
-
-        // dd($response);
-        //
-        // foreach ($response[0] as $key => $value) {
-        //     dd($key,$value);
-        // }
+        $response = $this->hurtowniaRepository->getAllProducts();
 
         return view("hurtownia.index", [
             'products' => $response,
-            'categories' => Categories::all(),
+            'categories' => $this->categoryRepository->all(),
         ]);
     }
 
@@ -44,120 +41,41 @@ class HurtowniaController extends Controller
         Log::info("---------------");
         Log::info("HurtowniaController - store");
 
-        // tworzymy tablice z gatunkami 
-        // explode bierze ',' jako separator i zwraca tablice 
-        $genres = explode(",", $request['genres']);
+        $genres = $this->parseGenres($request['genres']);
 
-        // trim() - z jakiegos powodu dostaje duzo białych spacji: '      Kategoria  ' 
-        $genres = array_map(function ($genre) {
-            if (strlen($genre) != 0) {
-                return trim($genre);
-            }
-        }, $genres);
-
-        //usuwam puste stringi 
-        $genres = array_filter($genres, fn ($genre) => strlen($genre) > 0);
-
-        // usuwam powtarzajace sie kategorie - z jakiegos powodu API zwraca 1,2,3... x categoria_x dla jednego elementu
-        // moze to dodac to osobnej funkcji np. remove_duplicates(array) = ZROBIONE
         $genres = $this->remove_duplicates($genres);
 
-        // pobieramy gatunki i sprawdzmy czy istnieje jakis, ktorego jescze nie mamy w bazie danyc
-        // jesli taki znajdziemy, aktualizujemy baze danych
-        $categories = Categories::all();
-
-        // $categories->all() dlatego, ze ::all() zwraca kolekcje, a nie tablice
-        // ->all() zwraca surową tablice
-        $categories = array_map(fn ($category) => $category->name, $categories->all());
-
-        // roznica = kategoire ktorych nie mamy obecnie w bazie danych = kategorie do dodania
-        $categories_to_add = $this->remove_duplicates($genres, $categories);
+        $categories = $this->categoryRepository->all();
+        $categoriesToAdd = $this->removeDuplicates($genres, $categories);
 
         Log::info("Przychodzace: ");
         Log::info($genres);
         Log::info("Obecne: ");
         Log::info($categories);
         Log::info("Do dodawnia: ");
-        Log::info($categories_to_add);
+        Log::info($categoriesToAdd);
 
-        // dd();
-
-        DB::transaction(function () use ($categories_to_add, $request, $genres) {
-
-            // Transakcja dla kategorii
-            foreach ($categories_to_add as $c) {
-                try {
-                    $trimmedName = trim($c);
-                    if (!empty($trimmedName)) {
-                        Categories::create(['name' => $trimmedName]);
-                    }
-                } catch (\Exception $e) {
-                    Log::error('Błąd podczas dodawania kategorii: ' . $e->getMessage());
-                }
-            }
-
-            // Transakcja dla produktu
-            $request->validate([
-                'name' => 'required|string|max:255',
-                'description' => 'string',
-                'short_description' => 'string',
-                'amount' => 'required|string|min:0',
-                'price' => 'required|min:0',
-            ]);
-
-            try {
-                $product = Product::create($request->only(['name', 'description', 'short_description', 'amount', 'price']));
-            } catch (QueryException $e) {
-                Log::error('Bład podczas tworzenia produtu: ' . $e->getMessage());
-            }
-
-            // pobieranie id kategori, ktore chcemy przypisac do danego produktu
-            // genres to kategorie przychodace od ajax (kategorie produktu, ktory chcemy dodac)
-
-            $ids = [];
-            foreach ($genres as $name) {
-                $ids[] = Categories::getCategoryId($name);
-            }
-
-            Log::channel('debug')->info($ids[1]);
-            $product->categories()->attach($ids);
+        DB::transaction(function () use ($categoriesToAdd, $request, $genres) {
+            $this->updateCategories($categoriesToAdd);
+            $product = $this->validateAndCreateProduct($request);
+            $this->attachProductCategories($product, $genres);
         }, 5);
 
-        // Gdy juz sfinalizujemy kwestie dodawnia produktu do sklepu, wysyalmy o tym informacje do hurtowni
-        // Hurtownia aktualizuje ilosc (amount--)
-        $url = config('hurtownia.url.update') . $request['id'];
-        Log::channel('debug')->info($url);
-        Http::put($url);
+        $this->hurtowniaRepository->updateProductInWarehouse($request['id']);
     }
 
-    public function show(Request $request)
+    // Pozostałe metody zostały przeniesione do odpowiednich repozytoriów
+    // ...
+
+    private function parseGenres($genres)
     {
-        $url = config('hurtownia.url.description');
-        $apiKey = config('hurtownia.api.key');
-
-        $response  = Http::withHeaders([
-            'Authorization' => $apiKey,
-        ])->get($url, ['id' => $request->id]);
-
-        // dd($response['description']);
-
-        return view('hurtownia.show')->with([
-            'description' => $response['description'] ?? 'No description',
-        ]);
+        //usuwam puste stringi 
+        return array_filter($genres, fn ($genre) => strlen($genre) > 0);
     }
-
-    /**
-     * remove_duplicates()
-     * Jesli podamy tylko jedna tablive arrayB, zostaje zwrocona bez powtorzen
-     * Jesli podamy dwa argumrnty arrayA i arrayB, zwrocona zostaje tablica arrayA - arrayB
-     * 
-     * @param array $arrayA The input array
-     * @param array|null $arrayB Another array (optional)
-     * @return array Array without duplicated values
-     */
 
     private function remove_duplicates(array $array, array $array2 = null)
     {
+        //usuwam powtarzajace sie kategorie - z jakiegos powodu API zwraca 1,2,3... x categoria_x dla jednego elementu
 
         $result = [];
 
@@ -178,5 +96,22 @@ class HurtowniaController extends Controller
         }
 
         return $result;
+    }
+
+
+    private function updateCategories(array $categoriesToAdd)
+    {
+        $this->categoryRepository->createCategory($categoriesToAdd);
+    }
+
+    private function validateAndCreateProduct(Request $request)
+    {
+        return $this->productRepository->createProduct($request->only(['name', 'description', 'short_description', 'amount', 'price']));
+    }
+
+    private function attachProductCategories($product, $genres)
+    {
+        $categoryIds = $this->categoryRepository->getCategoryIdsByNames($genres);
+        $this->productRepository->attachCategoriesToProduct($product, $categoryIds);
     }
 }

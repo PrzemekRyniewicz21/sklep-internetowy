@@ -13,9 +13,22 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
 use App\Exceptions\ShopExcetion as Exception;
 
+use App\Repositories\ProductRepository;
+use App\Repositories\CategoryRepository;
+
 
 class ProductController extends Controller
 {
+
+    private ProductRepository $productRepository;
+    private CategoryRepository $categoryRepository;
+
+    public function __construct(ProductRepository $productRepository, CategoryRepository $categoryRepository)
+    {
+        $this->productRepository = $productRepository;
+        $this->categoryRepository = $categoryRepository;
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -23,7 +36,8 @@ class ProductController extends Controller
      */
     public function index()
     {
-        $products = Product::paginate(30);
+        // dd("??");
+        $products = $this->productRepository->paginate(30);
 
         return response()->view('products.index', [
             'products' => $products
@@ -39,7 +53,7 @@ class ProductController extends Controller
     {
         // dd("??");
 
-        $categories = Categories::all();
+        $categories = $this->categoryRepository->all();
 
         return view('products.create')->with([
             'categories' => $categories,
@@ -58,16 +72,15 @@ class ProductController extends Controller
         $data_from_form = $request->validated();
 
         // collect - po to by uzyc except() aby nie dodawac category_id
-        $product = new Product(collect($data_from_form)->except('category_id')->toArray());
+        $product = $this->productRepository->createProduct($data_from_form);
 
         if ($request->hasFile('img')) {
             $product->img_path = $request->file('img')->store('public');
         }
 
-        $product->save();
+        $this->productRepository->saveProduct($product);
 
-        // przypisanie odpowiedniej kategori
-        $product->categories()->attach($data_from_form['category_id']);
+        $this->productRepository->attachCategoriesToProduct($product, $data_from_form['category_id']);
 
         return redirect(route('products-list'))->with('status', 'product stored');
     }
@@ -78,12 +91,13 @@ class ProductController extends Controller
      * @param  \App\Models\Product  $product
      * @return \Illuminate\Http\Response
      */
-    public function show(Product $product)
+    public function show(Request $request, $id)
     {
-        $categories = Product::find($product->id)->categories()->get()->pluck('name');
+        $product_id = $id;
+        $categories = $this->productRepository->find($product_id)->categories()->get()->pluck('name');
 
         return view("products.show", [
-            'product' => $product,
+            'product' => $this->productRepository->find($product_id),
             'categories' => $categories,
         ]);
     }
@@ -97,7 +111,7 @@ class ProductController extends Controller
     public function edit(Product $product)
     {
         // dd($product);
-        $categories = Product::find($product->id)->categories()->get()->pluck('name');
+        $categories = $this->productRepository->find($product->id)->categories()->get()->pluck('name');
 
         return view("products.edit", [
             'product' => $product,
