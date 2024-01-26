@@ -16,8 +16,20 @@ class CategoryRepository
         $this->category = $category;
     }
 
-    public function all()
+    /**
+     * Przyjmuje jeden parametr @param string 
+     * default'owo jest == '', podanie 'names' sprawi, ze zostana zwrocone tylko cateogry->name
+     * @param string $param The input array ''|'names'
+     * @return array  
+     */
+    public function all(string $param = '')
     {
+        if ($param == 'names') {
+
+            // przemapowanie categoirs by zawierala tylko nazwy kategori
+            $categories = $this->category::all();
+            return array_map(fn ($category) => $category->name, $categories->all());
+        }
         return $this->category::all();
     }
 

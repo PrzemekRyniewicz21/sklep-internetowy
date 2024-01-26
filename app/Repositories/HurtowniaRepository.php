@@ -19,7 +19,7 @@ class HurtowniaRepository
         return $response['products'];
     }
 
-    public function updateProductInWarehouse($productId)
+    public function UpdateProductAmountInHurtownia($productId)
     {
         $url = config('hurtownia.url.update') . $productId;
         Log::channel('debug')->info($url);

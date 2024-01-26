@@ -39,15 +39,15 @@ class HurtowniaController extends Controller
 
     public function store(Request $request)
     {
-        dd("????");
         Log::info("---------------");
         Log::info("HurtowniaController - store");
 
         $genres = $this->parseGenres($request['genres']);
 
-        $genres = $this->remove_duplicates($genres);
+        $genres = $this->removeDuplicates($genres);
 
-        $categories = $this->categoryRepository->all();
+        $categories = $this->categoryRepository->all('names'); // param 'name' zwroci nam tylko nazwy kateogri
+
         $categoriesToAdd = $this->removeDuplicates($genres, $categories);
 
         Log::info("Przychodzace: ");
@@ -56,6 +56,8 @@ class HurtowniaController extends Controller
         Log::info($categories);
         Log::info("Do dodawnia: ");
         Log::info($categoriesToAdd);
+        Log::info("Request only = ");
+        Log::info($request->only(['name', 'description', 'short_description', 'amount', 'price']));
 
         DB::transaction(function () use ($categoriesToAdd, $request, $genres) {
             $this->updateCategories($categoriesToAdd);
@@ -63,7 +65,8 @@ class HurtowniaController extends Controller
             $this->attachProductCategories($product, $genres);
         }, 5);
 
-        // $this->hurtowniaRepository->updateProductInWarehouse($request['id']);
+        Log::info($request->id);
+        $this->hurtowniaRepository->updateProductInWarehouse($request->id);
     }
 
     public function show(Request $request)
@@ -82,16 +85,36 @@ class HurtowniaController extends Controller
         ]);
     }
 
-    // Pozostałe metody zostały przeniesione do odpowiednich repozytoriów
-    // ...
-
     private function parseGenres($genres)
     {
+        // tworzymy tablice z gatunkami 
+        // explode bierze ',' jako separator i zwraca tablice 
+        $genres = explode(",", $genres);
+
+        // trim() - z jakiegos powodu dostaje duzo białych spacji: '      Kategoria  ' 
+        $genres = array_map(function ($genre) {
+            if (strlen($genre) != 0) {
+                return trim($genre);
+            }
+        }, $genres);
+
         //usuwam puste stringi 
-        return array_filter($genres, fn ($genre) => strlen($genre) > 0);
+        $genres = array_filter($genres, fn ($genre) => strlen($genre) > 0);
+
+        return $genres;
     }
 
-    private function remove_duplicates(array $array, array $array2 = null)
+    /**
+     * remove_duplicates()
+     * Jesli podamy tylko jedna tablive arrayB, zostaje zwrocona bez powtorzen
+     * Jesli podamy dwa argumrnty arrayA i arrayB, zwrocona zostaje tablica arrayA - arrayB
+     * 
+     * @param array $arrayA The input array
+     * @param array|null $arrayB Another array (optional)
+     * @return array Array without duplicated values
+     */
+
+    private function removeDuplicates(array $array, array $array2 = null)
     {
         //usuwam powtarzajace sie kategorie - z jakiegos powodu API zwraca 1,2,3... x categoria_x dla jednego elementu
 

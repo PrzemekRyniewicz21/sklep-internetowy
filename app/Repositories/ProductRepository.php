@@ -6,6 +6,7 @@ namespace App\Repositories;
 
 use App\Models\Product;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 use function PHPUnit\Framework\isNull;
 
@@ -35,7 +36,9 @@ class ProductRepository
 
     public function createProduct($formData)
     {
-        $formData->only(['name', 'description', 'short_description', 'amount', 'price']);
+
+        Log::info("Validated errors: ");
+        Log::info($this->validate_product($formData));
 
         if (($this->validate_product($formData)) == null) {
 
@@ -48,7 +51,7 @@ class ProductRepository
         }
 
         $productData = collect($formData)->except('category_id')->toArray();
-        $product = new $this->product->create($productData);
+        $product = $this->product->create($productData);
 
 
         return $product;
