@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace App\Repositories;
 
+use App\Interfaces\ProductRepositoryInterface;
 use App\Models\Product;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
-use function PHPUnit\Framework\isNull;
 
-class ProductRepository
+class ProductRepository implements ProductRepositoryInterface
 {
     private Product $product;
 

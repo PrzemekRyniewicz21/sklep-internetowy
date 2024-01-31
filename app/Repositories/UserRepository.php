@@ -6,8 +6,9 @@ use App\Http\Requests\UpdateUserRequest;
 use App\Models\Address;
 use App\Models\User;
 use Illuminate\Http\Request;
+use App\Interfaces\UserRepositoryInterface;
 
-class UserRepository
+class UserRepository implements UserRepositoryInterface
 {
     protected $model;
 

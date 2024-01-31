@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
-use App\Repositories\HurtowniaRepository;
+use App\Interfaces\HurtowniaRepositoryInterface;
 use App\Repositories\ProductRepository;
 use App\Repositories\CategoryRepository;
 use Illuminate\Support\Facades\DB;
@@ -17,7 +17,7 @@ class HurtowniaController extends Controller
     protected $categoryRepository;
 
     public function __construct(
-        HurtowniaRepository $hurtowniaRepository,
+        HurtowniaRepositoryInterface $hurtowniaRepository,
         ProductRepository $productRepository,
         CategoryRepository $categoryRepository
     ) {

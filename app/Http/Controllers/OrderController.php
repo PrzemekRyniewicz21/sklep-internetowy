@@ -11,13 +11,13 @@ use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Log;
-use App\Repositories\OrderRepository;
+use App\Interfaces\OrderRepositoryInterface;
 
 class OrderController extends Controller
 {
-    private $orderRepository;
+    private OrderRepositoryInterface $orderRepository;
 
-    public function __construct(OrderRepository $orderRepository)
+    public function __construct(OrderRepositoryInterface $orderRepository)
     {
         $this->orderRepository = $orderRepository;
     }
@@ -28,7 +28,7 @@ class OrderController extends Controller
      */
     public function index()
     {
-        // warunek w if zle wyglada - DO ZROBIENIA
+        // pobieranie id na sztywno - DO ZROBIENIA
         if (Auth::id() == config('admin.data.id')) {
 
             return view('orders.admin', [

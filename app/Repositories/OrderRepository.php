@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Repositories;
 
+use App\Interfaces\OrderRepositoryInterface;
 use App\Models\Order;
 use Illuminate\Support\Facades\Log;
 use App\ValueObjects\Cart;
@@ -11,7 +12,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Http\RedirectResponse;
 
-class OrderRepository
+class OrderRepository implements OrderRepositoryInterface
 {
     private Order $order;
 

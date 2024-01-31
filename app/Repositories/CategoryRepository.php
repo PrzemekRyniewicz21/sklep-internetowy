@@ -4,10 +4,11 @@ declare(strict_types=1);
 
 namespace App\Repositories;
 
+use App\Interfaces\CategoryRepositoryInterface;
 use App\Models\Categories;
 use Illuminate\Support\Facades\Log;
 
-class CategoryRepository
+class CategoryRepository implements CategoryRepositoryInterface
 {
     private Categories $category;
 

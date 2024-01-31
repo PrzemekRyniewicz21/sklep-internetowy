@@ -2,10 +2,11 @@
 
 namespace App\Repositories;
 
+use App\Interfaces\HurtowniaRepositoryInterface;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
-class HurtowniaRepository
+class HurtowniaRepository implements HurtowniaRepositoryInterface
 {
     public function getAllProducts()
     {

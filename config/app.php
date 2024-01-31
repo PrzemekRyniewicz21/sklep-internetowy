@@ -175,6 +175,14 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
 
+
+        // Wlasne provider'y
+        App\Providers\UserServiceProvider::class,
+        App\Providers\HurtowniaServiceProvider::class,
+        App\Providers\OrderServiceProvider::class,
+        App\Providers\ProductServiceProvider::class,
+        App\Providers\CategoryServiceProvider::class,
+
     ],
 
     /*

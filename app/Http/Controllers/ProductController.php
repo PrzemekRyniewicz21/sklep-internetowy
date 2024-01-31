@@ -13,17 +13,16 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
 use App\Exceptions\ShopException;
 use App\Http\Requests\UpdateProductRequest;
-use App\Repositories\ProductRepository;
-use App\Repositories\CategoryRepository;
-
+use App\Interfaces\CategoryRepositoryInterface;
+use App\Interfaces\ProductRepositoryInterface;
 
 class ProductController extends Controller
 {
 
-    private ProductRepository $productRepository;
-    private CategoryRepository $categoryRepository;
+    private ProductRepositoryInterface $productRepository;
+    private CategoryRepositoryInterface $categoryRepository;
 
-    public function __construct(ProductRepository $productRepository, CategoryRepository $categoryRepository)
+    public function __construct(ProductRepositoryInterface $productRepository, CategoryRepositoryInterface $categoryRepository)
     {
         $this->productRepository = $productRepository;
         $this->categoryRepository = $categoryRepository;
