@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use App\Models\Categories;
+use App\Repositories\CategoryRepository;
+use App\Repositories\ProductRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -11,6 +13,14 @@ use Illuminate\Support\Facades\Log;
 
 class WelcomeController extends Controller
 {
+    private $productRepository;
+    private $categoryRepository;
+
+    public function __construct(CategoryRepository $categoryRepository, ProductRepository $productRepository)
+    {
+        $this->productRepository = $productRepository;
+        $this->categoryRepository = $categoryRepository;
+    }
     /**
      * Display a listing of the resource.
      * @param Request $request
@@ -22,7 +32,7 @@ class WelcomeController extends Controller
         $paginate = $request->query('paginate') ?? 500;
         $sort = $request->query('sort') ?? 'desc';
         // $sort = 'asc';
-        $query = Product::query();
+        $query = $this->productRepository->query();
 
         if (!is_null($filters)) {
 
@@ -50,7 +60,7 @@ class WelcomeController extends Controller
             return response()->json($query->paginate($paginate));
         }
 
-        $categories = Categories::orderBy('name')->get();
+        $categories = $this->categoryRepository->orderBy('name')->get();
 
         return view('welcome', [
             'products' => $query->paginate($paginate),

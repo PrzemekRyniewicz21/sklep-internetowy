@@ -11,8 +11,8 @@ use App\Models\Categories;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
-use App\Exceptions\ShopExcetion as Exception;
-
+use App\Exceptions\ShopException;
+use App\Http\Requests\UpdateProductRequest;
 use App\Repositories\ProductRepository;
 use App\Repositories\CategoryRepository;
 
@@ -126,21 +126,13 @@ class ProductController extends Controller
      * @param  \App\Models\Product  $product
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Product $product)
+    public function update(UpdateProductRequest $request, Product $product)
     {
-        $validated_data = $request; // BRAK WALIDACJI - DO ZROBIENIA !!!
+        $validatedData = $request->validated();
 
-        $product->name = $validated_data['name'];
-        $product->short_description = $validated_data['short_description'];
-        $product->amount =  $validated_data['amount'];
-        $product->price = (float)$validated_data['price']; // decimal
+        $updatedProduct = $this->productRepository->updateProduct($product, $validatedData);
 
-        //edycja kategori - DO ZROBIENIA
-        // $categories = $request['categories'];
-
-        $product->save();
-
-        return redirect(route('products-list'))->with('status', 'product stored');
+        return redirect(route('products-list'))->with('status', 'Product updated');
     }
 
     /**
@@ -151,16 +143,23 @@ class ProductController extends Controller
      */
     public function destroy(Product $product)
     {
-        // dd("???");
         try {
+
             $product->orders()->detach();
-            $product->delete();
+
+            // Sprawdź, czy operacja usuwania produktu zakończyła się sukcesem
+            if (!$product->delete()) {
+                throw new ShopException('Error - wystapil blad podczas usuwania produktu!');
+            }
+
             Session::flash('status', 'Product deleted!');
+
             return redirect(route('products-list'));
-        } catch (Exception $e) {
+        } catch (ShopException $e) {
+            // Obsługa wyjątku ShopException
             return response()->json([
                 'status' => 'error',
-                'message' => 'Error accured!'
+                'message' => $e->getMessage()
             ])->setStatusCode(500);
         }
     }

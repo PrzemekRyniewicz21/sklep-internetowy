@@ -34,6 +34,11 @@ class ProductRepository
         return $this->product->paginate($value);
     }
 
+    public function query()
+    {
+        return $this->product->query();
+    }
+
     public function createProduct($formData)
     {
 
@@ -53,6 +58,21 @@ class ProductRepository
         $productData = collect($formData)->except('category_id')->toArray();
         $product = $this->product->create($productData);
 
+
+        return $product;
+    }
+
+    public function updateProduct(Product $product, array $validatedData)
+    {
+        $product->name = $validatedData['name'];
+        $product->short_description = $validatedData['short_description'];
+        $product->amount = $validatedData['amount'];
+        $product->price = (float)$validatedData['price'];
+
+        // Edycja kategorii - DO ZROBIENIA
+        // $categories = $validatedData['categories'];
+
+        $product->save();
 
         return $product;
     }

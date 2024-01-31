@@ -33,6 +33,11 @@ class CategoryRepository
         return $this->category::all();
     }
 
+    public function orderBy($value)
+    {
+        return $this->category->orderBy($value);
+    }
+
     public function find($id)
     {
         return $this->category->find($id);

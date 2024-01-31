@@ -11,9 +11,16 @@ use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Log;
+use App\Repositories\OrderRepository;
 
 class OrderController extends Controller
 {
+    private $orderRepository;
+
+    public function __construct(OrderRepository $orderRepository)
+    {
+        $this->orderRepository = $orderRepository;
+    }
     /**
      * Display a listing of the resource.
      *
@@ -25,14 +32,14 @@ class OrderController extends Controller
         if (Auth::id() == config('admin.data.id')) {
 
             return view('orders.admin', [
-                'orders' => Order::all(),
+                'orders' => $this->orderRepository->allOrders(),
                 // 'orders' => Order::with('user.address'),
             ]);
         }
 
         // widok dla zwyklego usera
         return view('orders.index', [
-            'orders' => Order::where('user_id', Auth::id())->paginate(10),
+            'orders' => $this->orderRepository->getUserOrders(Auth::id()),
         ]);
     }
 
@@ -43,30 +50,7 @@ class OrderController extends Controller
      */
     public function store(): RedirectResponse
     {
-        $cart = Session::get('cart', new Cart());
-        $order = new Order();
-        $order->amount = $cart->getQuantity();
-        $order->price = $cart->getSum();
-        $order->quantity = $cart->getQuantity();
-        $order->user_id = Auth::id();
-        $order->save();
-
-        // dd($cart->getItems()->map(function($item){
-        //     return $item->getProductId();
-        // }));
-
-        $productsIds = $cart->getItems()->map(function ($item) {
-            return [
-                'product_id' => $item->getProductId()
-            ];
-        });
-
-        $order->products()->attach($productsIds);
-
-        // 'czyscimy' koszyk
-        Session::put('cart', new Cart());
-
-        return redirect(route('order.index'))->with('status', 'success order');
+        return $this->orderRepository->store();
     }
 
     public function update(Order $order)

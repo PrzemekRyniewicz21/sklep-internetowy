@@ -4,11 +4,10 @@ namespace App\Exceptions;
 
 use Exception;
 
-class ShopExcetion extends Exception
+class ShopException extends Exception
 {
-    // obecnie tylko testujemy
-    public function msg()
+    public function __construct($message = 'error', $code = 0, Exception $previous = null)
     {
-        echo "ERROR";
+        parent::__construct($message, $code, $previous);
     }
 }

@@ -66,7 +66,7 @@ class HurtowniaController extends Controller
         }, 5);
 
         Log::info($request->id);
-        $this->hurtowniaRepository->updateProductInWarehouse($request->id);
+        $this->hurtowniaRepository->UpdateProductAmountInHurtownia($request->id);
     }
 
     public function show(Request $request)
